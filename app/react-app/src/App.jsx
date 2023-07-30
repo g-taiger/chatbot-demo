@@ -14,35 +14,51 @@ export default class App extends React.Component {
       open: false
     }
   }
-  
-  initAnswer = () => {
-    const initDataset = this.state.dataset[this.state.currentId];
-    const initAnswers = initDataset.answers;
 
+  // 次の質問と回答候補を表示する
+  displayNextQuestion = (nextQuestionId) => {
+    // チャット配列の取得
+    const chats = this.state.chats
+    // 新しい質問を追加
+    chats.push({
+      text: this.state.dataset[nextQuestionId].question,
+      type: "question"
+    })
+    // stateの更新
     this.setState({
-      answers: initAnswers
+      answers: this.state.dataset[nextQuestionId].answers,
+      chats: chats,
+      currentId: nextQuestionId
     })
   }
 
-  initChats = () => {
-    const initDataset = this.state.dataset[this.state.currentId];
-    const chat = {
-      text: initDataset.question,
-      type: "question"
+  selectAnswer = (selectedAnswer, nextQuestionId) => {
+    switch(true) {
+      case (nextQuestionId === "init"):
+        //最初の質問を表示する
+        this.displayNextQuestion(nextQuestionId)
+        break;
+      default:
+        // Idが"init"以外の時
+        // 選択した回答をチャットに追加する
+        const chats = this.state.chats;
+        chats.push({
+          text: selectedAnswer,
+          type: "answer"
+        })
+        // チャットの更新
+        this.setState({
+          chats: chats
+        })
+        // 次の質問を表示
+        this.displayNextQuestion(nextQuestionId)
+        break;
     }
-
-    const chats = this.state.chats;
-    chats.push(chat)
-
-    this.setState( {
-      chats: chats
-    })
-
   }
 
   componentDidMount() {
-    this.initAnswer();
-    this.initChats();
+    const initAnswer = "";
+    this.selectAnswer(initAnswer, this.state.currentId)
   }
 
   render() {
