@@ -13,6 +13,8 @@ export default class App extends React.Component {
       dataset: defaultDataset,
       open: false
     }
+    // コールバック関数をバインドする
+    // バインドしないとrenderするたびに関数が毎回つくられて効率が落ちる。
     this.selectAnswer = this.selectAnswer.bind(this)
   }
 
