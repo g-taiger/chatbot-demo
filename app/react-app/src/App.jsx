@@ -41,6 +41,13 @@ export default class App extends React.Component {
         //最初の質問を表示する
         setTimeout(() => this.displayNextQuestion(nextQuestionId), 500);
         break;
+      
+      case (/^https:*/.test(nextQuestionId)):
+        const a = document.createElement("a");
+        a.href = nextQuestionId;
+        a.target = "_blank";
+        a.click();
+        break;
       default:
         // Idが"init"以外の時
         // 選択した回答をチャットに追加する
