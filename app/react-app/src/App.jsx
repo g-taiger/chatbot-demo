@@ -39,7 +39,7 @@ export default class App extends React.Component {
     switch(true) {
       case (nextQuestionId === "init"):
         //最初の質問を表示する
-        this.displayNextQuestion(nextQuestionId)
+        setTimeout(() => this.displayNextQuestion(nextQuestionId), 500);
         break;
       default:
         // Idが"init"以外の時
@@ -54,7 +54,7 @@ export default class App extends React.Component {
           chats: chats
         })
         // 次の質問を表示
-        this.displayNextQuestion(nextQuestionId)
+        setTimeout(() => this.displayNextQuestion(nextQuestionId), 1000);
         break;
     }
   }
