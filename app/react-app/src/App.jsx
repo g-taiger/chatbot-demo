@@ -2,6 +2,7 @@ import React from 'react';
 import './assets/styles/style.css'
 import defaultDataset from './dataset';
 import { AnswersList, Chats } from './components/index.js';
+import FormDialog from './components/Forms/FormDialog';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -15,7 +16,9 @@ export default class App extends React.Component {
     }
     // コールバック関数をバインドする
     // バインドしないとrenderするたびに関数が毎回つくられて効率が落ちる。
-    this.selectAnswer = this.selectAnswer.bind(this)
+    this.selectAnswer = this.selectAnswer.bind(this);
+    this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   // 次の質問と回答候補を表示する
@@ -37,19 +40,26 @@ export default class App extends React.Component {
 
   selectAnswer = (selectedAnswer, nextQuestionId) => {
     switch(true) {
+      //最初の質問を表示する
       case (nextQuestionId === "init"):
-        //最初の質問を表示する
         setTimeout(() => this.displayNextQuestion(nextQuestionId), 500);
         break;
       
+      // nextQuestionIdがURLの時
       case (/^https:*/.test(nextQuestionId)):
         const a = document.createElement("a");
         a.href = nextQuestionId;
         a.target = "_blank";
         a.click();
         break;
+
+      // お問い合わせフォームの表示
+      case (nextQuestionId === "contact"):
+        this.handleClickOpen();
+        break;
+
+      // それ以外（会話が続く）
       default:
-        // Idが"init"以外の時
         // 選択した回答をチャットに追加する
         const chats = this.state.chats;
         chats.push({
@@ -65,6 +75,15 @@ export default class App extends React.Component {
         break;
     }
   }
+
+  handleClickOpen = () => {
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+
 
   componentDidMount() {
     const initAnswer = "";
@@ -84,6 +103,7 @@ export default class App extends React.Component {
         <div className="c-box">
           <Chats chats={this.state.chats}/>
           <AnswersList answers={this.state.answers} select={this.selectAnswer}/>
+          <FormDialog open={this.state.open} handleClose={this.handleClose} />
         </div>
       </section>
     );
